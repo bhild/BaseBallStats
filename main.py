@@ -18,19 +18,40 @@
 #   Left On Base
 #   Win percentage
 
+import csv
+
+
 
 #these are the weights for weighted on base average
-wBB	= .699 #weight for base on balls (walks)
-wHBP = .728 #wieght for hit by pitch
-w1B	= .883 #wieght for single
-w2B = 1.238 #wieght for double
-w3B	= 1.558 #wieght for triple
-wHR	= 1.979 #wieght for homerun
-
-#for now I will use the 2020 stats
-#later I will add a mechinism to get the stats for the apporate year
+wBB	= .0 #weight for base on balls (walks)
+wHBP = .0 #wieght for hit by pitch
+w1B	= .0 #wieght for single
+w2B = .0 #wieght for double
+w3B	= .0 #wieght for triple
+wHR	= .0 #wieght for homerun
 
 #odds of a hitter getting a hit against a pitcher
+
+def getWeightsForYear(year): #gets the wOBA weights for the relevant year
+    global wBB
+    global wHBP
+    global w1B
+    global w2B
+    global w3B
+    global wHR
+    with open('statsheets/FanGraph_wOBA_weights.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if(row['year'] == year):
+                wBB = float(row['wBB'])
+                wHBP = float(row['wHBP'])
+                w1B = float(row['w1B'])
+                w2B = float(row['w2B'])
+                w3B = float(row['w3B'])
+                wHR = float(row['wHR'])
+    print(wBB, wHBP, w1B, w2B, w3B, wHR)
+    return 0
+
 def hittingOdds( battingAvg, battingAvgAgainst, leagueAvg):
     hitChance = ((battingAvg*battingAvgAgainst)/leagueAvg)
     hitChance /= hitChance + (((1-battingAvg)*(1-battingAvgAgainst))/(1-leagueAvg))
@@ -61,3 +82,4 @@ def wOBAvP(uBB, HBP, B1, B2, B3, HR, AB, BB, IBB, SF, battingAvgAgainst, leagueA
     return ret
 
 
+getWeightsForYear("2025")
